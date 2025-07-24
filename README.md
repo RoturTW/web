@@ -1,5 +1,5 @@
 > [!CAUTION]
-> this repo and all tlds is going to be archived and removed once rtr and rwl are in a finished state
+> this repo and all tlds are going to be archived and removed once rtr and rwl are in a finished state
 > and the process of purchasing tlds will change.
 
 # OWTP
