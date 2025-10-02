@@ -42,7 +42,7 @@ web://website.web/directory2/index.osl
 
 # Registering a TLD
 
-To register a TLD on the rotur web you should join the rotur discord server: https://discord.com/invite/HNycesXRy5
+To register a TLD on the rotur web you should join the rotur discord server: https://discord.com/invite/ReyzwPx2g9
 
 Then put in a pull request to the /tlds.json file and setup your server to serve clients that request to your tld
 
