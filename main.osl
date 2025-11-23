@@ -1,8 +1,6 @@
 import "github.com/gin-gonic/gin"
 import "osl/fs"
 
-string contentPath = "./static"
-
 def noCORS(*gin.Context c) (
     c.Header("Access-Control-Allow-Origin", "*")
     c.Header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
@@ -12,14 +10,6 @@ def noCORS(*gin.Context c) (
         return
     )
     c.Next()
-)
-
-def get(*gin.Context c) (
-  path := fs.JoinPath(contentPath,c.Param("tld"),c.Param("domain"),c.Param("resource"))
-
-  content := fs.ReadFile(path)
-
-  c.String(200, content)
 )
 
 def main() (
