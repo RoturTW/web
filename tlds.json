@@ -1,3 +1,6 @@
 {
-    "flf": "https://raw.githubusercontent.com/Flufi-Boi/FlufiWeb/refs/heads/main"
+    "flf": "https://raw.githubusercontent.com/Flufi-Boi/FlufiWeb/refs/heads/main",
+    "web": "https://raw.githubusercontent.com/RoturTW/roturWeb.rtr/refs/heads/main",
+    "mist": "https://web.mistium.com",
+    "soap": "https://web.mistium.com"
 }
