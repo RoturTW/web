@@ -1,27 +1,20 @@
-import "github.com/gin-gonic/gin"
-import "osl/fs"
+import "std:serve"
+import "std:fs"
+import "std:json"
 
-def noCORS(*gin.Context c) (
-    c.Header("Access-Control-Allow-Origin", "*")
-    c.Header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
-    c.Header("Access-Control-Allow-Headers", "*")
-    if c.Request.Method == "OPTIONS" (
-        c.AbortWithStatus(204)
-        return
-    )
-    c.Next()
-)
+auto r = serve.new()
 
-def main() (
-  gin.SetMode("release")
+r.use(serve.corsOpen())
+r.use(serve.logger())
 
-  r := gin.Default()
+r.GET("/tlds", def(*serve.Context c) -> (
+  string tlds = fs.readFile("tlds.json")
+  object parsed = json.parse<object>(tlds) catch (
+	c.string(500, "Unable to parse tlds.json")
+	return
+  )
+  c.json(200, parsed)
+))
 
-  r.Use(noCORS)
+r.run(":3164")
 
-  r.GET("/tlds", def(*gin.Context c) -> (
-    c.JSON(200, fs.ReadFile("tlds.json").JsonParse())
-  ))
-
-  r.Run(":" ++ 3000)
-)
