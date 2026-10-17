@@ -1,20 +1,29 @@
 import "std:serve"
 import "std:fs"
-import "std:json"
+import "./registry.osl"
+
+string notFoundPage = fs.readFile("pages/404.html")
 
 auto r = serve.new()
 
 r.use(serve.corsOpen())
 r.use(serve.logger())
 
-r.GET("/tlds", def(*serve.Context c) -> (
-  string tlds = fs.readFile("tlds.json")
-  object parsed = json.parse<object>(tlds) catch (
-	c.string(500, "Unable to parse tlds.json")
-	return
+def tlds(*serve.Context c) (
+  object parsed = loadTlds("tlds.json") catch (
+    c.text(500, _.message)
+    return
   )
   c.json(200, parsed)
+)
+
+// Summit fetches /tlds.json; /tlds is the original path and stays for older clients.
+r.get("/tlds", tlds)
+r.get("/tlds.json", tlds)
+r.static("/static", "./static")
+
+r.any("/{path...}", def(*serve.Context c) -> (
+  c.html(404, notFoundPage)
 ))
 
 r.run(":3164")
-
