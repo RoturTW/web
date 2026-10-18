@@ -1,0 +1,12 @@
+import "std:fs"
+import "std:json"
+import "std:result"
+
+// Reads the file on every call, so an edit to tlds.json is live without a restart.
+def loadTlds(string path) result<object, string> (
+  if !fs.exists(path) return result.err(path ++ " is missing")
+  object parsed = json.parse<object>(fs.readFile(path)) catch (
+    return result.err(path ++ " is not a JSON object")
+  )
+  return result.ok(parsed)
+)

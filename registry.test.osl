@@ -1,0 +1,12 @@
+import "std:testing"
+import "./registry.osl"
+
+object tlds = loadTlds("tlds.json").unwrap()
+testing.assert(tlds.len > 0, "the registry is empty")
+for tld of tlds (
+  string host = tlds[tld].assert(string)
+  testing.assert(host.startsWith("https://"), tld ++ " is not an https URL: " ++ host)
+)
+
+testing.assert(loadTlds("testdata/missing.json").isErr(), "a missing file should be an error")
+testing.assert(loadTlds("testdata/broken-tlds.json").isErr(), "malformed JSON should be an error")

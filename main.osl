@@ -1,27 +1,29 @@
-import "github.com/gin-gonic/gin"
-import "osl/fs"
+import "std:serve"
+import "std:fs"
+import "./registry.osl"
 
-def noCORS(*gin.Context c) (
-    c.Header("Access-Control-Allow-Origin", "*")
-    c.Header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
-    c.Header("Access-Control-Allow-Headers", "*")
-    if c.Request.Method == "OPTIONS" (
-        c.AbortWithStatus(204)
-        return
-    )
-    c.Next()
+string notFoundPage = fs.readFile("pages/404.html")
+
+auto r = serve.new()
+
+r.use(serve.corsOpen())
+r.use(serve.logger())
+
+def tlds(*serve.Context c) (
+  object parsed = loadTlds("tlds.json") catch (
+    c.text(500, _.message)
+    return
+  )
+  c.json(200, parsed)
 )
 
-def main() (
-  gin.SetMode("release")
+// Summit fetches /tlds.json; /tlds is the original path and stays for older clients.
+r.get("/tlds", tlds)
+r.get("/tlds.json", tlds)
+r.static("/static", "./static")
 
-  r := gin.Default()
+r.any("/{path...}", def(*serve.Context c) -> (
+  c.html(404, notFoundPage)
+))
 
-  r.Use(noCORS)
-
-  r.GET("/tlds", def(*gin.Context c) -> (
-    c.JSON(200, fs.ReadFile("tlds.json").JsonParse())
-  ))
-
-  r.Run(":" ++ 3000)
-)
+r.run(":3164")
